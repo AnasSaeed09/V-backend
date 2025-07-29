@@ -3,7 +3,18 @@ import express from "express";
 import { GoogleGenAI } from "@google/genai";
 import productModel from "../models/productModel.js";
 import dotenv from "dotenv";
+import fs from "fs";
+import path from "path";
+import { fileURLToPath } from "url";
 dotenv.config();
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+const filePath = path.join(__dirname, "vtoeContext.txt");
+
+const vtoeContent = fs.readFileSync(filePath, "utf-8");
+
+
 
 const router = express.Router();
 
@@ -29,7 +40,11 @@ router.post("/chat", async (req, res) => {
     const contents = [
       {
         role: "user",
-        parts: [{ text: prompt }],
+        parts: [
+      {
+        text: `${vtoeContent}\n\nUser Question: ${prompt}`,
+      },
+        ],
       },
     ];
 
